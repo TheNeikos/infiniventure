@@ -38,4 +38,49 @@ fn main() {
             clear([0.3, 0.85, 0.2, 1.0], g); // A lovely green
         });
     }
+
+    let vertex_data = vec![
+        //top (0, 0, 1)
+        Vertex::new([-1, -1,  1], [0, 0]),
+        Vertex::new([ 1, -1,  1], [1, 0]),
+        Vertex::new([ 1,  1,  1], [1, 1]),
+        Vertex::new([-1,  1,  1], [0, 1]),
+        //bottom (0, 0, -1)
+        Vertex::new([ 1,  1, -1], [0, 0]),
+        Vertex::new([-1,  1, -1], [1, 0]),
+        Vertex::new([-1, -1, -1], [1, 1]),
+        Vertex::new([ 1, -1, -1], [0, 1]),
+        //right (1, 0, 0)
+        Vertex::new([ 1, -1, -1], [0, 0]),
+        Vertex::new([ 1,  1, -1], [1, 0]),
+        Vertex::new([ 1,  1,  1], [1, 1]),
+        Vertex::new([ 1, -1,  1], [0, 1]),
+        //left (-1, 0, 0)
+        Vertex::new([-1,  1,  1], [0, 0]),
+        Vertex::new([-1, -1,  1], [1, 0]),
+        Vertex::new([-1, -1, -1], [1, 1]),
+        Vertex::new([-1,  1, -1], [0, 1]),
+        //front (0, 1, 0)
+        Vertex::new([-1,  1, -1], [0, 0]),
+        Vertex::new([ 1,  1, -1], [1, 0]),
+        Vertex::new([ 1,  1,  1], [1, 1]),
+        Vertex::new([-1,  1,  1], [0, 1]),
+        //back (0, -1, 0)
+        Vertex::new([ 1, -1,  1], [0, 0]),
+        Vertex::new([-1, -1,  1], [1, 0]),
+        Vertex::new([-1, -1, -1], [1, 1]),
+        Vertex::new([ 1, -1, -1], [0, 1]),
+        ];
+
+    let index_data: &[u8] = &[
+        0,  1,  2,  2,  3,  0, // top
+        4,  6,  5,  6,  4,  7, // bottom
+        8,  9, 10, 10, 11,  8, // right
+        12, 14, 13, 14, 12, 16, // left
+        16, 18, 17, 18, 16, 19, // front
+        20, 21, 22, 22, 23, 20, // back
+    ];
+
+    let (vbuf, slice) = window.factory.create_vertex_buffer_indexed(&vertex_data,
+                                                                    index_data);
 }
