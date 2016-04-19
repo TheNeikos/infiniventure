@@ -1,0 +1,12 @@
+[package]
+authors = ["Marcel Müller <neikos@neikos.email>"]
+name = "rustcraft"
+version = "0.1.0"
+
+[dependencies]
+camera_controllers = "0.13.0"
+image = "0.9.0"
+
+[dependencies.piston_window]
+optional = false
+path = "../piston_window/"
