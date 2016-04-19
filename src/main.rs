@@ -3,6 +3,7 @@ extern crate camera_controllers;
 #[macro_use] extern crate gfx;
 
 use piston_window::*;
+use gfx::traits::*;
 
 gfx_vertex_struct!( Vertex {
     a_pos: [i8; 4] = "a_pos",
