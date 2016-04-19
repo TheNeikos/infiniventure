@@ -1,9 +1,14 @@
 extern crate piston_window;
 extern crate camera_controllers;
 #[macro_use] extern crate gfx;
+extern crate shader_version;
+
+use std::path::Path;
 
 use piston_window::*;
 use gfx::traits::*;
+use shader_version::Shaders;
+use shader_version::glsl::GLSL;
 
 gfx_vertex_struct!( Vertex {
     a_pos: [i8; 4] = "a_pos",
@@ -84,4 +89,23 @@ fn main() {
 
     let (vbuf, slice) = window.factory.create_vertex_buffer_indexed(&vertex_data,
                                                                     index_data);
+
+    let stone = Texture::from_path(
+        &mut window.factory,
+        &Path::new("assets/stone.png"),
+        Flip::None,
+        &TextureSettings::new(),
+        );
+
+
+    let pso = window.factory.create_pipeline_simple(
+        Shaders::new().set(GLSL::V1_50,
+                           include_str!("../asset_src/cube_150.glslv"))
+                       .get(OpenGL::V3_2.to_glsl()).unwrap().as_bytes(),
+        Shaders::new().set(GLSL::V1_50,
+                           include_str!("../asset_src/cube_150.glslf"))
+                      .get(OpenGL::V3_2.to_glsl()).unwrap().as_bytes(),
+        gfx::state::CullFace::Nothing,
+        pipe::new()
+        ).unwrap();
 }
