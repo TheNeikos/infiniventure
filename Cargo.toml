@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [dependencies]
 camera_controllers = "0.13.0"
+gfx = "0.10"
 image = "0.9.0"
 
 [dependencies.piston_window]
