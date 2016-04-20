@@ -41,7 +41,7 @@ gfx_pipeline!( pipe {
 });
 
 fn main() {
-    let mut window : PistonWindow<(), Sdl2Window> = WindowSettings::new("Hello Piston!", [640, 480])
+    let mut window : PistonWindow<(), Sdl2Window> = WindowSettings::new("Rustcraft!", [640, 480])
         .samples(4).exit_on_esc(true).build().unwrap();
     window.set_capture_cursor(true);
 
