@@ -12,15 +12,15 @@ use state::State;
 use geo::*;
 
 gfx_vertex_struct!( Vertex {
-    a_pos: [i8; 4] = "a_pos",
+    a_pos: [f32; 4] = "a_pos",
     a_tex_coord: [i8; 2] = "a_tex_coord",
     a_face: u8 = "a_face",
 });
 
 impl Vertex {
-    pub fn new(pos: [i8; 3], tc: [i8; 2], face: u8) -> Vertex {
+    pub fn new(pos: [f32; 3], tc: [i8; 2], face: u8) -> Vertex {
         Vertex {
-            a_pos: [pos[0], pos[1], pos[2], 1],
+            a_pos: [pos[0], pos[1], pos[2], 1.0],
             a_tex_coord: tc,
             a_face: face
         }
@@ -100,7 +100,7 @@ impl Renderable for Cube {
 
     fn get_translation(&self) -> [[f32; 4]; 4] {
         let mut id = mat4_id();
-        let pos = self.shape.half_extents();
+        let pos = self.pos;
         id[3][0] = pos.x;
         id[3][1] = pos.y;
         id[3][2] = pos.z;

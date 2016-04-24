@@ -79,12 +79,14 @@ pub struct Cube {
     pub faces: CubeFaces,
     pub shape: Cuboid<Vector3<f32>>,
     pub kind:  CubeType,
+    pub pos: Vector3<f32>,
 }
 
 impl Cube {
-    pub fn new(pos: Vector3<f32>, kind: CubeType) -> Cube {
+    pub fn new(pos: Vector3<f32>, size: Vector3<f32>, kind: CubeType) -> Cube {
         Cube {
-            shape: Cuboid::new(pos*2.0),
+            pos: pos,
+            shape: Cuboid::new(size/4.0),
             faces: kind.to_cubefaces(),
             kind: kind,
         }

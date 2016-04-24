@@ -48,8 +48,19 @@ fn main() {
 
     first_person.velocity = 10.0;
 
-    let cube = geo::Cube::new(Vector3::new(0.0, 0.0, 0.0), geo::CubeType::Stone);
-    let cube2 = geo::Cube::new(Vector3::new(2.0, 0.0, 0.0), geo::CubeType::Grass);
+    let mut cubes = Vec::new();
+    for x in 0..10 {
+        for y in 0..10 {
+            let height = 0.0;
+            let kind = match height {
+                _ if height > -2.5 && height < 2.5  => geo::CubeType::Grass,
+                _ if height < -2.5                  => geo::CubeType::Stone,
+                _ => continue,
+            };
+            cubes.push(geo::Cube::new(Vector3::new(x as f32, height, y as f32),
+                                      Vector3::new(1.0, 1.0, 1.0), kind));
+        }
+    }
 
     while let Some(e) = window.next() {
         first_person.event(&e);
@@ -64,8 +75,9 @@ fn main() {
                 projection
             );
 
-            cube.draw(&mut window, proj);
-            cube2.draw(&mut window, proj);
+            for cube in cubes.iter() {
+                cube.draw(&mut window, proj);
+            }
 
             window.encoder.flush(&mut window.device);
         };

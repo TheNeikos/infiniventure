@@ -1,5 +1,5 @@
 #version 150 core
-in ivec3 a_pos;
+in vec3 a_pos;
 in ivec2 a_tex_coord;
 in int a_face;
 
