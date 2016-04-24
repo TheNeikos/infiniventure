@@ -8,10 +8,7 @@ extern crate sdl2_window;
 extern crate ncollide;
 extern crate nalgebra as na;
 
-use std::path::Path;
-
 use piston_window::*;
-use gfx::traits::*;
 use sdl2_window::Sdl2Window;
 use na::Vector3;
 

@@ -1,13 +1,11 @@
 
 use na::Vector3;
 use ncollide::shape::Cuboid;
-use piston_window::*;
-
-use render::SPRITE_COUNT_W;
 
 // The order is never to be changed, for now
 #[repr(u16)]
 #[derive(Debug, Copy, Clone)]
+#[allow(dead_code)]
 enum FaceType {
     Stone = 0, Dirt, GrassDirt, Grass
 }
@@ -33,6 +31,7 @@ impl CubeFaces {
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub enum CubeType {
     Stone, Dirt, Grass
 }

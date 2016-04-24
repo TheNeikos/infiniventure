@@ -6,13 +6,10 @@ use gfx::traits::Factory;
 use gfx_device_gl;
 use shader_version::Shaders;
 use shader_version::glsl::GLSL;
-use camera_controllers::model_view_projection;
 use vecmath::{col_mat4_mul, mat4_id};
 
 use state::State;
 use geo::*;
-
-pub static SPRITE_COUNT_W: u16 = 32;
 
 gfx_vertex_struct!( Vertex {
     a_pos: [i8; 4] = "a_pos",
@@ -30,6 +27,7 @@ impl Vertex {
     }
 }
 
+#[allow(dead_code)]
 gfx_pipeline!( cube_pipeline {
     vbuf: gfx::VertexBuffer<Vertex> = (),
     u_model_view_proj: gfx::Global<[[f32; 4]; 4]> = "u_model_view_proj",
@@ -83,7 +81,7 @@ impl Renderable for Cube {
 
         let proj = col_mat4_mul(proj, self.get_translation());
 
-        let mut data = cube_pipeline::Data {
+        let data = cube_pipeline::Data {
             vbuf: vbuf.clone(),
             u_model_view_proj: proj,
             t_color: (tex.view.clone(), window.factory.create_sampler(
