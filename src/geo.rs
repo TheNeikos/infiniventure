@@ -91,4 +91,8 @@ impl Cube {
             kind: kind,
         }
     }
+
+    pub fn pos(&self) -> [f32; 3] {
+        [self.pos.x, self.pos.y, self.pos.z]
+    }
 }

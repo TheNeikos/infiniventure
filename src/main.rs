@@ -11,6 +11,8 @@ extern crate nalgebra as na;
 use piston_window::*;
 use sdl2_window::Sdl2Window;
 use na::Vector3;
+use gfx::traits::FactoryExt;
+use gfx::traits::Factory;
 
 use camera_controllers::{FirstPersonSettings, FirstPerson, CameraPerspective,
                         model_view_projection};
@@ -19,7 +21,7 @@ mod geo;
 mod render;
 mod state;
 
-use render::Renderable;
+use render::{cube_pipeline, Renderable, VertexBuffer, Instanceable};
 
 fn main() {
     let mut window : PistonWindow<(), Sdl2Window> = WindowSettings::new("Rustcraft!", [640, 480])
@@ -50,8 +52,8 @@ fn main() {
 
     let mut cubes = Vec::new();
 
-    for x in 0..100 {
-        for y in 0..100 {
+    for x in 0..200 {
+        for y in 0..200 {
             let height = ((x as f32 + y as f32) * 0.05).sin().abs() * 5.0;
             let kind = match height {
                 _ if height > 2.5  => geo::CubeType::Grass,
@@ -62,6 +64,12 @@ fn main() {
                                       Vector3::new(1.0, 1.0, 1.0), kind));
         }
     }
+
+    let instances = cubes.iter().map(|x| x.instance(&mut window)).collect::<Vec<_>>();
+    let instance_buffer = window.factory.create_buffer_dynamic(instances.len(), gfx::BufferRole::Vertex,
+                                                               gfx::Bind::empty()).unwrap();
+
+    window.encoder.update_buffer(&instance_buffer, &instances, 0).unwrap();
 
     while let Some(e) = window.next() {
         first_person.event(&e);
@@ -76,9 +84,30 @@ fn main() {
                 projection
             );
 
-            for cube in cubes.iter() {
-                cube.draw(&mut window, proj);
-            }
+            let &(ref vbuf, ref slice) = window.app.get_buffer(VertexBuffer::Cube);
+            let tex = window.app.get_texture("sprite.png").unwrap();
+            let pso = &window.app.get_psos().cube;
+
+            let mut slice = slice.clone();
+            slice.instances = Some((instances.len() as u32, 0));
+
+            let data = cube_pipeline::Data {
+                vbuf: vbuf.clone(),
+                instances: instance_buffer.clone(),
+                u_model_view_proj: proj,
+                t_color: (tex.view.clone(), window.factory.create_sampler(
+                        gfx::tex::SamplerInfo::new(
+                            gfx::tex::FilterMethod::Scale,
+                            gfx::tex::WrapMode::Clamp
+                            ))),
+                            u_width: tex.get_size().0 as f32,
+                            u_height: tex.get_size().1 as f32,
+                            out_color: window.output_color.clone(),
+                            out_depth: window.output_stencil.clone(),
+            };
+            window.encoder.draw(&slice, &pso, &data);
+
+
 
             window.encoder.flush(&mut window.device);
         };

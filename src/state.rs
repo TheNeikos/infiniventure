@@ -17,8 +17,8 @@ pub struct State<R: gfx::Resources = gfx_device_gl::Resources> {
 
 impl<R: gfx::Resources> State<R> {
     pub fn get_buffer(&self, key: VertexBuffer)
-        -> Option<&(gfx::handle::Buffer<R, Vertex>, gfx::Slice<R>)> {
-        self.vbuffers.get(&key)
+        -> &(gfx::handle::Buffer<R, Vertex>, gfx::Slice<R>) {
+        self.vbuffers.get(&key).unwrap()
     }
 
     pub fn get_texture(&self, key: &'static str) -> Option<&Texture<R>> {
@@ -92,12 +92,12 @@ fn initialize_cube<R, W: Window>(state: &mut State, window: &mut PistonWindow<R,
         ];
 
     let index_data: &[u8] = &[
-        0,  1,  2,  2,  3,  0,  // top
-        4,  6,  5,  6,  4,  7,  // bottom
-        8,  9, 10, 10,  8,  11,  // right
-        12, 14, 13, 14, 12, 15, // left
-        16, 18, 17, 18, 16, 19, // front
-        20, 21, 22, 22, 23, 20, // back
+        0,  2,  1,  0,  3,  2,  // top
+        4,  5,  6,  4,  6,  7,  // bottom
+        8,  10, 9,  8, 11,  10, // right
+        12, 13, 14, 12, 14, 15, // left
+        16, 17, 18, 16, 18, 19, // front
+        20, 22, 21, 20, 23, 22, // back
     ];
 
     let data = window.factory.create_vertex_buffer_indexed(&vertex_data, index_data);
