@@ -49,15 +49,16 @@ fn main() {
     first_person.velocity = 10.0;
 
     let mut cubes = Vec::new();
-    for x in 0..10 {
-        for y in 0..10 {
-            let height = 0.0;
+
+    for x in 0..100 {
+        for y in 0..100 {
+            let height = ((x as f32 + y as f32) * 0.05).sin().abs() * 5.0;
             let kind = match height {
-                _ if height > -2.5 && height < 2.5  => geo::CubeType::Grass,
-                _ if height < -2.5                  => geo::CubeType::Stone,
-                _ => continue,
+                _ if height > 2.5  => geo::CubeType::Grass,
+                _ if height < 2.5  => geo::CubeType::Stone,
+                _ => geo::CubeType::Grass,
             };
-            cubes.push(geo::Cube::new(Vector3::new(x as f32, height, y as f32),
+            cubes.push(geo::Cube::new(Vector3::new(x as f32, height.floor(), y as f32),
                                       Vector3::new(1.0, 1.0, 1.0), kind));
         }
     }
