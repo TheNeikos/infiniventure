@@ -59,7 +59,7 @@ pub struct PSOBuffer {
 }
 
 impl PSOBuffer {
-    pub fn new<U, W: Window>(window: &mut PistonWindow<U, W>) -> PSOBuffer {
+    pub fn new<W: Window>(window: &mut PistonWindow<W>) -> PSOBuffer {
         PSOBuffer {
             cube: window.factory.create_pipeline_simple(
                       Shaders::new().set(GLSL::V1_50,
@@ -82,17 +82,17 @@ pub enum VertexBuffer {
 
 pub trait Renderable {
     /// We assume that it has been checked beforehand that it is drawing time
-    fn draw<W: Window>(&self, w: &mut PistonWindow<State, W>, proj: [[f32; 4]; 4]);
+    fn draw<W: Window>(&self, w: &mut PistonWindow<W>, proj: [[f32; 4]; 4]);
 }
 
 pub trait Instanceable {
     type InstanceType : Sized;
-    fn instance<W: Window>(&self, w: &mut PistonWindow<State, W>) -> Self::InstanceType;
+    fn instance<W: Window>(&self, w: &mut PistonWindow<W>) -> Self::InstanceType;
 }
 
 impl Instanceable for Cube {
     type InstanceType = CubeInstance;
-    fn instance<W: Window>(&self, w: &mut PistonWindow<State, W>) -> Self::InstanceType {
+    fn instance<W: Window>(&self, w: &mut PistonWindow<W>) -> Self::InstanceType {
         CubeInstance::new(self.pos(), self.faces.to_array())
     }
 }

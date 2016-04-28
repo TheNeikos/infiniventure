@@ -24,15 +24,13 @@ mod state;
 use render::{cube_pipeline, Renderable, VertexBuffer, Instanceable};
 
 fn main() {
-    let mut window : PistonWindow<(), Sdl2Window> = WindowSettings::new("Rustcraft!", [640, 480])
+    let mut window : PistonWindow<Sdl2Window> = WindowSettings::new("Rustcraft!", [640, 480])
         .samples(4).exit_on_esc(true).build().unwrap();
     window.set_capture_cursor(true);
 
     let state = state::State::new(&mut window);
 
-    let mut window = window.app(state);
-
-    let get_projection = |w: &PistonWindow<state::State, Sdl2Window>| {
+    let get_projection = |w: &PistonWindow<Sdl2Window>| {
         let draw_size = w.window.draw_size();
         CameraPerspective {
             fov: 90.0, near_clip: 0.1, far_clip: 1000.0,
@@ -52,8 +50,8 @@ fn main() {
 
     let mut cubes = Vec::new();
 
-    for x in 0..200 {
-        for y in 0..200 {
+    for x in 0..100 {
+        for y in 0..100 {
             let height = ((x as f32 + y as f32) * 0.05).sin().abs() * 5.0;
             let kind = match height {
                 _ if height > 2.5  => geo::CubeType::Grass,
@@ -84,9 +82,9 @@ fn main() {
                 projection
             );
 
-            let &(ref vbuf, ref slice) = window.app.get_buffer(VertexBuffer::Cube);
-            let tex = window.app.get_texture("sprite.png").unwrap();
-            let pso = &window.app.get_psos().cube;
+            let &(ref vbuf, ref slice) = state.get_buffer(VertexBuffer::Cube);
+            let tex = state.get_texture("sprite.png").unwrap();
+            let pso = &state.get_psos().cube;
 
             let mut slice = slice.clone();
             slice.instances = Some((instances.len() as u32, 0));

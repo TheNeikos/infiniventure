@@ -31,7 +31,7 @@ impl<R: gfx::Resources> State<R> {
 }
 
 impl State {
-    pub fn new<U, W: Window>(window: &mut PistonWindow<U, W>) -> State {
+    pub fn new<W: Window>(window: &mut PistonWindow<W>) -> State {
         let mut state = State {
             vbuffers: HashMap::new(),
             textures: HashMap::new(),
@@ -44,7 +44,7 @@ impl State {
     }
 }
 
-fn load_texture<R, W: Window>(state: &mut State, w: &mut PistonWindow<R, W>, name: &'static str) {
+fn load_texture<W: Window>(state: &mut State, w: &mut PistonWindow<W>, name: &'static str) {
     let mut path = PathBuf::from("assets");
     path.push(name);
     let tex = Texture::from_path(
@@ -57,7 +57,7 @@ fn load_texture<R, W: Window>(state: &mut State, w: &mut PistonWindow<R, W>, nam
 }
 
 
-fn initialize_cube<R, W: Window>(state: &mut State, window: &mut PistonWindow<R, W>) {
+fn initialize_cube<W: Window>(state: &mut State, window: &mut PistonWindow<W>) {
     let vertex_data = vec![
         //top (0, 0, 0.5)
         Vertex::new([-0.5, 0.5,  -0.5], [0, 0], 0), //0
