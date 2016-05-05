@@ -7,37 +7,46 @@ use gfx;
 use gfx::traits::FactoryExt;
 use gfx_device_gl;
 
-use render::{VertexBuffer, Vertex, PSOBuffer};
+use render::{VertexBuffer, ScreenVertex, Vertex, PSOBuffer, RTBuffer};
+
+type Vert<T> = (gfx::handle::Buffer<gfx_device_gl::Resources, T>, gfx::Slice<gfx_device_gl::Resources>);
 
 pub struct State<R: gfx::Resources = gfx_device_gl::Resources> {
-    vbuffers: HashMap<VertexBuffer, (gfx::handle::Buffer<R, Vertex>, gfx::Slice<R>)>,
     textures: HashMap<&'static str, Texture<R>>,
+    buffers: BBuffer,
     psos: PSOBuffer,
+    rts: RTBuffer,
 }
 
 impl<R: gfx::Resources> State<R> {
-    pub fn get_buffer(&self, key: VertexBuffer)
-        -> &(gfx::handle::Buffer<R, Vertex>, gfx::Slice<R>) {
-        self.vbuffers.get(&key).unwrap()
+    pub fn buffers(&self) -> &BBuffer {
+        &self.buffers
     }
 
     pub fn get_texture(&self, key: &'static str) -> Option<&Texture<R>> {
         self.textures.get(key)
     }
 
-    pub fn get_psos(&self) -> &PSOBuffer {
+    pub fn psos(&self) -> &PSOBuffer {
         &self.psos
+    }
+
+    pub fn rts(&self) -> &RTBuffer {
+        &self.rts
     }
 }
 
 impl State {
     pub fn new<W: Window>(window: &mut PistonWindow<W>) -> State {
         let mut state = State {
-            vbuffers: HashMap::new(),
             textures: HashMap::new(),
-            psos: PSOBuffer::new(window)
+            buffers: BBuffer {
+                cube: initialize_cube(window),
+                screen: initialize_screen(window),
+            },
+            psos: PSOBuffer::new(window),
+            rts: RTBuffer::new(window),
         };
-        initialize_cube(&mut state, window);
         load_texture(&mut state, window, "sprite.png");
 
         return state;
@@ -57,7 +66,13 @@ fn load_texture<W: Window>(state: &mut State, w: &mut PistonWindow<W>, name: &'s
 }
 
 
-fn initialize_cube<W: Window>(state: &mut State, window: &mut PistonWindow<W>) {
+pub struct BBuffer<R: gfx::Resources = gfx_device_gl::Resources> {
+    pub cube: (gfx::handle::Buffer<R, Vertex>, gfx::Slice<R>),
+    pub screen: (gfx::handle::Buffer<R, ScreenVertex>, gfx::Slice<R>)
+}
+
+fn initialize_cube<W: Window>(window: &mut PistonWindow<W>) -> Vert<Vertex>
+{
     let vertex_data = vec![
         //top (0, 0, 0.5)
         Vertex::new([-0.5, 0.5,  -0.5], [0, 0], 0), //0
@@ -102,5 +117,23 @@ fn initialize_cube<W: Window>(state: &mut State, window: &mut PistonWindow<W>) {
 
     let data = window.factory.create_vertex_buffer_indexed(&vertex_data, index_data);
 
-    state.vbuffers.insert(VertexBuffer::Cube, data);
+    data
+}
+
+fn initialize_screen<W: Window>(window: &mut PistonWindow<W>) -> Vert<ScreenVertex>
+{
+    let vertex_data = vec![
+        ScreenVertex::new([-1.0, -1.0]),
+        ScreenVertex::new([ 1.0, -1.0]),
+        ScreenVertex::new([ 1.0,  1.0]),
+        ScreenVertex::new([-1.0,  1.0]),
+    ];
+
+    let index_data: &[u8] = &[
+        0, 2, 1, 0, 3, 2,
+    ];
+
+    let data = window.factory.create_vertex_buffer_indexed(&vertex_data, index_data);
+
+    data
 }

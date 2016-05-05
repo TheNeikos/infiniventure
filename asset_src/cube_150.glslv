@@ -33,6 +33,4 @@ void main() {
     gl_Position = u_model_view_proj * vec4(a_pos + a_translate, 1.0);
 }
 
-// vim ft:glsl
-
-
+// vim ft=glsl

@@ -1,4 +1,6 @@
 
+use std::collections::HashMap;
+
 use na::Vector3;
 use ncollide::shape::Cuboid;
 
@@ -96,3 +98,11 @@ impl Cube {
         [self.pos.x, self.pos.y, self.pos.z]
     }
 }
+
+pub type ChunkSize = u8;
+pub type BlockPos = (ChunkSize, ChunkSize, ChunkSize);
+
+pub struct Chunk {
+    blocks: HashMap<BlockPos, Cube>,
+}
+
